@@ -1,0 +1,29 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+  #config.vm.box = "bento/centos-7.4"
+  config.vm.box = "bento/ubuntu-16.04"
+ # creating a topology with the servers having same memory allocated and gui disabled.
+ # vbox level naming is not possible.VMs take up local folder name as prefix.
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = false
+    vb.memory = "512"
+  end
+
+  config.vm.define "webapp01" do |config|
+    config.vm.hostname = "webapp01"
+    config.vm.network "private_network", ip: "192.168.44.10"
+  end
+
+  config.vm.define "webapp02" do |config|
+    config.vm.hostname = "webapp02"
+    config.vm.network "private_network", ip: "192.168.44.11"
+  end
+
+  config.vm.define "dbsrv01" do |config|
+    config.vm.hostname = "dbsrv01"
+    config.vm.network "private_network", ip: "192.168.44.12"
+  end
+
+end
