@@ -11,4 +11,4 @@ https://www.vagrantup.com/docs/multi-machine/
  Ansible Parallel Execution
  https://www.vagrantup.com/docs/provisioning/ansible.html
 
-![Alt](topology1.xml)
+![Alt](topology1/topology1.png)
