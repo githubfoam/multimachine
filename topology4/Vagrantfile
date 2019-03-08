@@ -4,15 +4,6 @@
 # Ansible Parallel Execution
 #https://www.vagrantup.com/docs/provisioning/ansible.html
 
-# Vagrant 1.7+ automatically inserts a different
-# insecure keypair for each new VM created. The easiest way
-# to use the same keypair for all the machines is to disable
-# this feature and rely on the legacy insecure key.
-# config.ssh.insert_key = false
-#
-# Note:
-# As of Vagrant 1.7.3, it is no longer necessary to disable
-# the keypair creation when using the auto-generated inventory.
 
 GUI = false # Enable/Disable GUI
 RAM = 512 # Default memory size in MB
