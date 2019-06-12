@@ -1,0 +1,4 @@
+---
+- hosts: gateway01
+  roles:
+    - common
