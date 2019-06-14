@@ -1,6 +1,10 @@
 # onos SDN mininet OpenFlow wireshark
 
 ----
+
+- [ONOS](https://onosproject.org)  
+- [Mininet](http://mininet.org/)
+
 - At leasts 4GB of memory
 - At least 2 cpu cores  
 - At least 20GB of space  
@@ -172,4 +176,19 @@ sudo mn --test pingall --topo single,3 --controller remote,ip=172.17.0.2 -v debu
 Custom Topology
 ```
 $ sudo mn --custom /vagrant/topologies/simple.py --controller remote,ip=172.17.0.2,port=6633
+mininet> pingall
+onos GUI - Topology
+
+```
+
+```
+$ sudo python /vagrant/topologies/example-topo.py
+mininet> pingall
+onos GUI - Topology
+
+OR
+
+sudo mn --custom /vagrant/topologies/example-topo.py --topo minimal --controller remote,ip=172.17.0.2
+mininet> pingall
+onos GUI - Topology
 ```

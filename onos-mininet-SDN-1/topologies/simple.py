@@ -15,10 +15,8 @@ class MyTopo( Topo ):
         Topo.__init__(self)
 
         # Add hosts
-        # h1 = self.addHost( 'h1', ip='192.168.1.1' )
-        # h2 = self.addHost( 'h2', ip='192.168.1.2' )
         h1 = self.addHost( 'h1' )
-        h1 = self.addHost( 'h2' )
+        h2 = self.addHost( 'h2' )
 
 
         # Add switches
