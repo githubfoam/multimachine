@@ -82,6 +82,9 @@ ONOS Core REST API
 http://192.168.45.10:8181/onos/v1/docs
 
 ONOS Controller IP : 192.168.45.10
+
+mininet experimental
+
 ```
 ```
 
