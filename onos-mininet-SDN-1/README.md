@@ -1,8 +1,8 @@
-# onos SDN mininet OpenFlow wireshark
+# onos-docker SDN mininet OpenFlow wireshark
 
 ----
 
-- [ONOS](https://onosproject.org)  
+- [ONOS-Docker](https://onosproject.org)  
 - [Mininet](http://mininet.org/)
 
 - At leasts 4GB of memory
