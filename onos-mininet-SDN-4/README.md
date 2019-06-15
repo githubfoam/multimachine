@@ -105,26 +105,3 @@ Hit '<tab>' for a list of available commands
 and '[cmd] --help' for help on a specific command.
 Hit '<ctrl-d>' or type 'logout' to exit ONOS session.
 ```
-
-
-
-```
-recommended options:
--n: install core Mininet dependencies;
--v: install Open vSwitch;
--f: install legacy Stanford 1.0 user switch and controller;
--w: install wireshark and improved OpenFlow wireshark dissector)
-
-git clone http://github.com/mininet/mininet
-mininet/util/install.sh -nvfw
-Wireshark version 2.6.8 >= 1.12 - returning
-```
-
-
-
-
-```
-vagrant@gateway01:~$ sudo mn --controller remote,ip=10.0.2.15
-vagrant@gateway01:~$ sudo mn -c
-*** Cleanup complete.
-```
