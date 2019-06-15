@@ -1,0 +1,4 @@
+---
+- hosts: onoscentos01
+  roles:
+    - common
