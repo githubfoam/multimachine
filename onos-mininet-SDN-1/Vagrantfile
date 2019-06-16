@@ -9,14 +9,15 @@ Vagrant.configure("2") do |config|
     vb.cpus = 1
   end
 
-    config.vm.define "gateway01" do |webtier|
-      webtier.vm.box = "bento/ubuntu-16.04"
-      webtier.vm.hostname = "gateway01"
+    config.vm.define "onos01" do |webtier|
+      # webtier.vm.box = "bento/ubuntu-16.04" # OK
+      webtier.vm.box = "bento/ubuntu-18.10"
+      webtier.vm.hostname = "onos01"
       webtier.vm.network "private_network", ip: "192.168.45.11"
       webtier.vm.network "forwarded_port", guest: 8181, host: 8181
       webtier.vm.provider "virtualbox" do |vb|
-          vb.name = "gateway01"
-          vb.memory = "4096"
+          vb.name = "onos01"
+          vb.memory = "2048"
       end
       webtier.vm.provision "ansible_local" do |ansible|
       ansible.playbook = "deploy.yml"
@@ -48,7 +49,7 @@ Vagrant.configure("2") do |config|
             echo "==============================================================================================="
             # sudo docker run -p 8181:8181 -it -d --name simple-onos onosproject/onos:latest
             sudo docker run -p 8181:8181 -it -d --name simple-onos onosproject/onos:2.1.0
-            echo "gateway01 up && running"
+            echo "onos01 up && running"
       SHELL
       end
 

@@ -182,13 +182,21 @@ onos GUI - Topology
 ```
 
 ```
-$ sudo python /vagrant/topologies/example-topo.py
+$ sudo python /vagrant/topologies/simple1.py
 mininet> pingall
 onos GUI - Topology
 
 OR
 
-sudo mn --custom /vagrant/topologies/example-topo.py --topo minimal --controller remote,ip=172.17.0.2
+sudo mn --custom /vagrant/topologies/simple1.py --topo minimal --controller remote,ip=172.17.0.2
 mininet> pingall
 onos GUI - Topology
+```
+
+```
+simple1 a single switch and three hosts
+simple2 two switches two hosts
+simple3 k: number of switches n: number of hosts per switch
+simple4 WAN Topology
+
 ```

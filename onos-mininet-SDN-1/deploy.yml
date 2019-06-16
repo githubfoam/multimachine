@@ -1,4 +1,4 @@
 ---
-- hosts: gateway01
+- hosts: onos01
   roles:
     - common
