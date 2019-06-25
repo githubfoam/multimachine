@@ -1,0 +1,4 @@
+---
+- hosts: control-machine1
+  roles:
+    - common
