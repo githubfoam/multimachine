@@ -1,0 +1,4 @@
+---
+- hosts: awx-machine
+  roles:
+    - common
