@@ -1,0 +1,10 @@
+---
+- hosts: control-machine1
+  roles:
+    - common
+- hosts: client-machine1
+  roles:
+    - common
+- hosts: client-machine2
+  roles:
+    - common

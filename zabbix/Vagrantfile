@@ -1,0 +1,74 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = false
+    vb.memory = "512"
+    vb.cpus = 2
+  end
+
+  config.vm.define "control-machine1" do |webtier|
+    webtier.vm.box = "bento/ubuntu-18.04"
+    webtier.vm.hostname = "control-machine1"
+    webtier.vm.network "private_network", ip: "192.168.45.25"
+    webtier.vm.provider "virtualbox" do |vb|
+        vb.name = "control-machine1"
+    end
+    webtier.vm.provision "shell", inline: <<-SHELL
+          wget https://repo.zabbix.com/zabbix/4.2/ubuntu/pool/main/z/zabbix-release/zabbix-release_4.2-1+bionic_all.deb
+          dpkg -i zabbix-release_4.2-1+bionic_all.deb
+          apt update
+          apt install -y zabbix-server-mysql zabbix-frontend-php zabbix-agent
+          systemctl enable --now zabbix-agent
+          echo "control-machine1 up && running"
+    SHELL
+  end
+
+
+  config.vm.define "client-machine1" do |webtier|
+    webtier.vm.box = "bento/ubuntu-18.10"
+    webtier.vm.hostname = "client-machine1"
+    webtier.vm.network "private_network", ip: "192.168.45.26"
+    webtier.vm.provider "virtualbox" do |vb|
+        vb.name = "client-machine1"
+    end
+    webtier.vm.provision "ansible_local" do |ansible|
+    ansible.playbook = "deploy.yml"
+    ansible.become = true
+    ansible.compatibility_mode = "2.0"
+    ansible.version = "2.8.2"
+    end
+    webtier.vm.provision "shell", inline: <<-SHELL
+          apt install zabbix-agent && systemctl enable --now zabbix-agent
+          echo "client-machine1 up && running"
+    SHELL
+  end
+
+
+
+  config.vm.define "client-machine2" do |webtier|
+    webtier.vm.box = "bento/centos-7.6"
+    webtier.vm.hostname = "client-machine2"
+    webtier.vm.network "private_network", ip: "192.168.45.27"
+    webtier.vm.provider "virtualbox" do |vb|
+        vb.name = "client-machine2"
+        vb.memory = "512"
+    end
+    webtier.vm.provision "ansible_local" do |ansible|
+    ansible.playbook = "deploy.yml"
+    ansible.become = true
+    ansible.compatibility_mode = "2.0"
+    ansible.version = "2.8.1"
+    end
+    webtier.vm.provision "shell", inline: <<-SHELL
+          rpm -Uvh https://repo.zabbix.com/zabbix/4.2/rhel/7/x86_64/zabbix-release-4.2-1.el7.noarch.rpm
+          yum clean all && yum -y install -y zabbix-agent
+          systemctl enable --now zabbix-agent
+          echo "client-machine2 up && running"
+    SHELL
+  end
+
+
+
+end
