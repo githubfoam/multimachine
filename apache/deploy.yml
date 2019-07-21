@@ -1,0 +1,6 @@
+---
+
+- hosts: apache01
+  roles:
+    - common
+    - githubfoam.apache
