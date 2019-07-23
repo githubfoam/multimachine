@@ -1,0 +1,53 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+$before_script = <<SCRIPT
+ echo "before script running"
+SCRIPT
+
+ $after_script = <<SCRIPT
+   echo "after script running"
+SCRIPT
+
+Vagrant.configure(2) do |config|
+ # creating a topology with the servers having same memory allocated and gui disabled.
+ # VM based different operating system
+ # vbox level naming is not possible.VMs take up local folder name as prefix.
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = false
+    vb.memory = "512"
+    vb.cpus = 1
+  end
+
+  config.vm.define "webapp01" do |webtier|
+    webtier.vm.box = "bento/ubuntu-16.04"
+    webtier.vm.hostname = "webapp01"
+    webtier.vm.network "private_network", ip: "192.168.44.10"
+    webtier.vm.provision "shell", inline: <<-SHELL
+      sudo apt-get update
+      echo "webapp01 up"
+    SHELL
+  end
+
+  config.vm.define "webapp02" do |webtier|
+    webtier.vm.box = "bento/centos-7.4"
+    webtier.vm.hostname = "webapp02"
+    webtier.vm.network "private_network", ip: "192.168.44.11"
+    webtier.vm.provision "shell", inline: $before_script
+    webtier.vm.provision "shell", inline: <<-SHELL
+      echo "webapp02 up"
+    SHELL
+    webtier.vm.provision "shell", inline: $after_script
+  end
+
+  # config.vm.define "dbsrv01" do |dbtier|
+  #   dbtier.vm.box = "bento/ubuntu-18.04"
+  #   dbtier.vm.hostname = "dbsrv01"
+  #   dbtier.vm.network "private_network", ip: "192.168.44.12"
+  #   dbtier.vm.provision "shell", inline: <<-SHELL
+  #     sudo apt-get update
+  #     echo "terraform-sandbox up"
+  #   SHELL
+  # end
+
+end
