@@ -1,0 +1,133 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# https://www.slothparadise.com/change-host-name-centos-7/
+
+Vagrant.configure("2") do |config|
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = false
+    vb.memory = "512"
+    vb.cpus = 2
+  end
+
+  config.vm.define "controller01" do |slurmcluster|
+    # slurmcluster.vm.box = "bento/scientific-7.6"
+    slurmcluster.vm.box = "bento/centos-7.6"
+    slurmcluster.vm.hostname = "controller01"
+    slurmcluster.vm.network "private_network", ip: "192.168.45.23"
+    slurmcluster.vm.provider "virtualbox" do |vb|
+        vb.name = "controller01"
+        vb.memory = "512"
+    end
+    slurmcluster.vm.provision "ansible_local" do |ansible|
+    ansible.playbook = "deploy.yml"
+    ansible.become = true
+    ansible.compatibility_mode = "2.0"
+    ansible.version = "2.8.2"
+    end
+    slurmcluster.vm.provision "shell", inline: <<-SHELL
+    yum remove mariadb-server mariadb-devel -y
+    yum remove slurm munge munge-libs munge-devel -y
+    yum install mariadb-server mariadb-devel -y
+    export MUNGEUSER=991 && groupadd -g $MUNGEUSER munge
+    useradd  -m -c "MUNGE Uid 'N' Gid Emporium" -d /var/lib/munge -u  $MUNGEUSER -g munge  -s /sbin/nologin munge
+    export SLURMUSER=992 && groupadd -g $SLURMUSER slurm
+    useradd  -m -c "SLURM workload manager" -d /var/lib/slurm -u $SLURMUSER -g slurm  -s /bin/bash slurm
+    yum install epel-release -y
+    yum install munge munge-libs munge-devel -y
+    yum install rng-tools -y
+    rngd -r /dev/urandom
+    # dd if=/dev/urandom bs=1 count=1024 | sudo tee /etc/munge/munge.key
+    echo -n "foo" | sha512sum | cut -d' ' -f1 | sudo tee /etc/munge/munge.key
+    chown munge: /etc/munge/munge.key
+    chmod 400 /etc/munge/munge.key
+    yum install gcc perl-ExtUtils-MakeMaker openssl openssl-devel pam-devel numactl numactl-devel hwloc hwloc-devel lua lua-devel readline-devel rrdtool-devel ncurses-devel man2html libibmad libibumad -y
+    wget https://download.schedmd.com/slurm/slurm-19.05.1-2.tar.bz2
+    yum install rpm-build -y
+    # mkdir /var/spool/slurmctld
+    # chown slurm: /var/spool/slurmctld
+    # chmod 755 /var/spool/slurmctld
+    # touch /var/log/slurmctld.log
+    # chown slurm: /var/log/slurmctld.log
+    # touch /var/log/slurm_jobacct.log /var/log/slurm_jobcomp.log
+    # chown slurm: /var/log/slurm_jobacct.log /var/log/slurm_jobcomp.log
+    # yum install ntp -y
+    # chkconfig ntpd on
+    # ntpdate pool.ntp.org
+    # systemctl start ntpd
+    hostnamectl status
+    SHELL
+  end
+
+
+  config.vm.define "compute01" do |slurmcluster|
+    # slurmcluster.vm.box = "bento/scientific-7.6"
+    slurmcluster.vm.box = "bento/centos-7.6"
+    slurmcluster.vm.hostname = "compute01"
+    slurmcluster.vm.network "private_network", ip: "192.168.45.24"
+    slurmcluster.vm.provider "virtualbox" do |vb|
+        vb.name = "compute01"
+    end
+    slurmcluster.vm.provision "ansible_local" do |ansible|
+    ansible.playbook = "deploy.yml"
+    ansible.become = true
+    ansible.compatibility_mode = "2.0"
+    ansible.version = "2.8.2"
+    end
+    slurmcluster.vm.provision "shell", inline: <<-SHELL
+    export MUNGEUSER=991 && groupadd -g $MUNGEUSER munge
+    useradd  -m -c "MUNGE Uid 'N' Gid Emporium" -d /var/lib/munge -u  $MUNGEUSER -g munge  -s /sbin/nologin munge
+    export SLURMUSER=992 && groupadd -g $SLURMUSER slurm
+    useradd  -m -c "SLURM workload manager" -d /var/lib/slurm -u $SLURMUSER -g slurm  -s /bin/bash slurm
+    yum install epel-release
+    yum install munge munge-libs munge-devel -y
+    # mkdir /var/spool/slurmd
+    # chown slurm: /var/spool/slurmd
+    # chmod 755 /var/spool/slurmd
+    # touch /var/log/slurmd.log
+    # chown slurm: /var/log/slurmd.log
+    # yum install ntp -y
+    # chkconfig ntpd on
+    # ntpdate pool.ntp.org
+    # systemctl start ntpd
+    hostnamectl status
+    SHELL
+  end
+
+  config.vm.define "compute02" do |slurmcluster|
+    # slurmcluster.vm.box = "bento/scientific-7.6"
+    slurmcluster.vm.box = "bento/centos-7.6"
+    slurmcluster.vm.hostname = "compute02"
+    slurmcluster.vm.network "private_network", ip: "192.168.45.25"
+    slurmcluster.vm.provider "virtualbox" do |vb|
+        vb.name = "compute02"
+    end
+    slurmcluster.vm.provision "ansible_local" do |ansible|
+    ansible.playbook = "deploy.yml"
+    ansible.become = true
+    ansible.compatibility_mode = "2.0"
+    ansible.version = "2.8.2"
+    end
+    slurmcluster.vm.provision "shell", inline: <<-SHELL
+    export MUNGEUSER=991 && groupadd -g $MUNGEUSER munge
+    useradd  -m -c "MUNGE Uid 'N' Gid Emporium" -d /var/lib/munge -u  $MUNGEUSER -g munge  -s /sbin/nologin munge
+    export SLURMUSER=992 && groupadd -g $SLURMUSER slurm
+    useradd  -m -c "SLURM workload manager" -d /var/lib/slurm -u $SLURMUSER -g slurm  -s /bin/bash slurm
+    yum install epel-release
+    yum install munge munge-libs munge-devel -y
+    # mkdir /var/spool/slurmd
+    # chown slurm: /var/spool/slurmd
+    # chmod 755 /var/spool/slurmd
+    # touch /var/log/slurmd.log
+    # chown slurm: /var/log/slurmd.log
+    # yum install ntp -y
+    # chkconfig ntpd on
+    # ntpdate pool.ntp.org
+    # systemctl start ntpd
+    hostnamectl status
+    SHELL
+  end
+
+
+
+end

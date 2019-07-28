@@ -1,0 +1,13 @@
+---
+- hosts: controllermachine01
+  become: yes
+  roles:
+    - common
+- hosts: slurmcompute01
+  become: yes
+  roles:
+    - common
+- hosts: slurmdb01
+  become: yes
+  roles:
+    - common
