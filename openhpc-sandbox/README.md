@@ -11,7 +11,6 @@ compute02
 ~~~~
 installer user: vagrant
 passwordless ssh between all nodes
-fakenfs: shared RPMS dir
 ~~~~
 
 ~~~~
