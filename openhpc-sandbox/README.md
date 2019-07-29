@@ -1,11 +1,17 @@
 # OpenHPC Sandbox
 
 
-nodes
+nodes(booted together, not sequential)
 ~~~~
 master01
+eth0 : public
+eth1 : private
 compute01
+eth0 : public
+eth1 : private (MAC)
 compute02
+eth0 : public
+eth1 : private (MAC)
 ~~~~
 
 ~~~~
