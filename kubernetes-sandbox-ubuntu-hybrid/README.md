@@ -41,6 +41,14 @@ https://kubernetes.io/docs/setup/production-environment/container-runtimes/
 ~~~~
 
 ~~~~
+calico pod network
+https://www.projectcalico.org/
+Cluster Networking
+https://kubernetes.io/docs/concepts/cluster-administration/networking/
+
+~~~~
+
+~~~~
 vagrant up
 or
 vagrant up k8s-master

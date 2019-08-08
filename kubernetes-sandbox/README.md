@@ -39,6 +39,15 @@ https://kubernetes.io/docs/setup/production-environment/container-runtimes/
 [WARNING IsDockerSystemdCheck]: detected "cgroupfs" as the Docker cgroup driver. The recommended driver is "systemd". Please follow the guide at https://kubernetes.io/docs/setup/cri/
 
 ~~~~
+
+~~~~
+calico pod network
+https://www.projectcalico.org/
+Cluster Networking
+https://kubernetes.io/docs/concepts/cluster-administration/networking/
+
+~~~~
+
 ~~~~
 vagrant up
 vagrant ssh k8s-master
