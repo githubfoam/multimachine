@@ -1,9 +1,0 @@
----
-
-- hosts: apache01
-  roles:
-    - common
-
-- hosts: apache02
-  roles:
-    - common
