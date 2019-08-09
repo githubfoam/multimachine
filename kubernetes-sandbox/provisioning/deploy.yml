@@ -8,8 +8,14 @@
     kubernetes_installed : '1'
     kubernetes_version : "=1.15.2-00"
     validated_dockerv: "=5:18.09.8~3-0~ubuntu-xenial"
+    ansible_python_interpreter: /usr/bin/python3
   tasks:
     # Install Docker and its dependent components.
+    # [WARNING]: Could not find aptitude. Using apt-get instead fix
+  - name: "APT: Install aptitude package"
+    apt:
+      name: aptitude
+      force_apt_get: yes
   - name: Install packages that allow apt to be used over HTTPS
     apt:
       name: "{{ packages }}"
@@ -42,6 +48,23 @@
       - containerd.io
     notify:
       - docker status
+
+  # Setup daemon.
+  # https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker
+  - name: Uploading daemon.json
+    template:
+        src: daemon.json.j2
+        dest: /etc/docker/daemon.json
+        owner: root
+        group: root
+        mode: 0644
+  - name: Create /etc/systemd/system/docker.service.d if it does not exist
+    file:
+      path: /etc/systemd/system/docker.service.d
+      state: directory
+      mode: '0755'
+  # Setup daemon.
+  # https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker
   - name: Add vagrant user to docker group
     user:
       name: vagrant
@@ -128,7 +151,13 @@
       kubernetes_installed : '1'
       kubernetes_version : "=1.15.2-00"
       validated_dockerv: "=5:18.09.8~3-0~ubuntu-xenial"
+      ansible_python_interpreter: /usr/bin/python3
   tasks:
+    # [WARNING]: Could not find aptitude. Using apt-get instead fix
+  - name: "APT: Install aptitude package"
+    apt:
+      name: aptitude
+      force_apt_get: yes
     # Install Docker and its dependent components.
   - name: Install packages that allow apt to be used over HTTPS
     apt:
@@ -162,6 +191,23 @@
       - containerd.io
     notify:
       - docker status
+  # Setup daemon.
+  # https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker
+  - name: Uploading daemon.json
+    template:
+        src: daemon.json.j2
+        dest: /etc/docker/daemon.json
+        owner: root
+        group: root
+        mode: 0644
+  - name: Create /etc/systemd/system/docker.service.d if it does not exist
+    file:
+      path: /etc/systemd/system/docker.service.d
+      state: directory
+      mode: '0755'
+  # Setup daemon.
+  # https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker
+
   - name: Add vagrant user to docker group
     user:
       name: vagrant
@@ -233,7 +279,13 @@
       kubernetes_installed : '1'
       kubernetes_version : "=1.15.2-00"
       validated_dockerv: "=5:18.09.8~3-0~ubuntu-xenial"
+      ansible_python_interpreter: /usr/bin/python3
   tasks:
+    # [WARNING]: Could not find aptitude. Using apt-get instead fix
+  - name: "APT: Install aptitude package"
+    apt:
+      name: aptitude
+      force_apt_get: yes
     # Install Docker and its dependent components.
   - name: Install packages that allow apt to be used over HTTPS
     apt:
@@ -267,6 +319,23 @@
       - containerd.io
     notify:
       - docker status
+  # Setup daemon.
+  # https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker
+  - name: Uploading daemon.json
+    template:
+        src: daemon.json.j2
+        dest: /etc/docker/daemon.json
+        owner: root
+        group: root
+        mode: 0644
+  - name: Create /etc/systemd/system/docker.service.d if it does not exist
+    file:
+      path: /etc/systemd/system/docker.service.d
+      state: directory
+      mode: '0755'
+  # Setup daemon.
+  # https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker
+
   - name: Add vagrant user to docker group
     user:
       name: vagrant
