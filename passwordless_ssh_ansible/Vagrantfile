@@ -1,0 +1,52 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = false
+    vb.memory = "512"
+    vb.cpus = 1
+  end
+
+  config.vm.define "apache01" do |webtier|
+
+    # vagrant box updates updates.
+    config.vm.box_check_update = true
+    webtier.vm.box = "bento/centos-7.6"
+    webtier.vm.hostname = "apache01"
+    webtier.vm.network "private_network", ip: "192.168.45.10"
+    webtier.vm.provider "virtualbox" do |vb|
+        vb.name = "apache01"
+    end
+    webtier.vm.provision "ansible_local" do |ansible|
+    ansible.playbook = "provisioning/deploy.yml"
+    ansible.become = true
+    ansible.compatibility_mode = "2.0"
+    ansible.version = "2.8.2" #centos
+    end
+    webtier.vm.provision "shell", inline: <<-SHELL
+          hostnamectl status
+    SHELL
+    end
+
+    config.vm.define "apache02" do |webtier|
+      webtier.vm.box = "bento/centos-7.6"
+      webtier.vm.hostname = "apache02"
+      webtier.vm.network "private_network", ip: "192.168.45.11"
+      webtier.vm.provider "virtualbox" do |vb|
+          vb.name = "apache02"
+      end
+      webtier.vm.provision "ansible_local" do |ansible|
+      ansible.playbook = "provisioning/deploy.yml"
+      ansible.become = true
+      ansible.compatibility_mode = "2.0"
+      ansible.version = "2.8.2" #centos
+      end
+      webtier.vm.provision "shell", inline: <<-SHELL
+          hostnamectl status
+      SHELL
+      end
+
+
+
+end
