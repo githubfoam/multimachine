@@ -1,0 +1,42 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = false
+    vb.memory = "512"
+    vb.cpus = 1
+  end
+
+  config.vm.define "control02" do |webtier|
+      webtier.vm.box = "bento/ubuntu-19.04"
+      webtier.vm.hostname = "control02"
+      webtier.vm.network "private_network", ip: "192.168.45.41"
+      webtier.vm.provider "virtualbox" do |vb|
+          vb.name = "control02"
+      end
+      webtier.vm.provision "ansible_local" do |ansible|
+        ansible.playbook = "deploy.yml"
+        ansible.become = true
+        ansible.compatibility_mode = "2.0"
+        ansible.version = "2.8.4"
+      end
+      webtier.vm.provision "shell", inline: <<-SHELL
+            sudo apt-get update
+            sudo apt-get remove docker docker-engine docker.io
+            sudo apt-get install apt-transport-https ca-certificates curl software-properties-common -y
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+            sudo apt-key fingerprint 0EBFCD88
+            sudo add-apt-repository \
+            "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+            $(lsb_release -cs) \
+            stable"
+            sudo apt-get update
+            sudo apt-get install docker-ce -y
+            sudo docker --version
+            hostnamectl status
+      SHELL
+    end
+
+
+end

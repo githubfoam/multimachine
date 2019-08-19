@@ -1,0 +1,19 @@
+FROM centos:7.6.1810
+MAINTAINER githubfoam
+
+# preps
+RUN yum -y update && yum clean all
+RUN yum -y install epel-release; yum clean all
+
+# Default environment variables
+# Default system timezone (Tokyo)
+ENV TIMEZONE=GMT+09
+# Used to configure OS language support
+ENV LANGUAGE=en_US.UTF-8
+# entrypoint folders
+
+RUN mkdir /workspace && mkdir /entrypoint && \
+	ln -s /workspace /appspace && \
+	chmod -R 0777 /workspace && chmod +x /workspace;
+
+WORKDIR /workspace
