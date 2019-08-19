@@ -1,0 +1,99 @@
+---
+- name: "Boot consul cluster"
+  # gather_facts: true
+  hosts: consulcluster
+  become: yes
+  vars:
+    VER: "1.5.3"
+    # ansible_python_interpreter: "/usr/bin/python3" # only debian not redhat
+  tasks:
+    - name: "Add Debian commons"
+      include_tasks: deploy_debian.yml
+      when: " ansible_os_family == 'Debian' and ansible_distribution in ['Debian','Ubuntu'] "
+    - name: "Add RedHat commons"
+      include_tasks: deploy_redhat.yml
+      when: " ansible_os_family == 'RedHat' and ansible_distribution in ['CentOS','Fedora','Scientific'] "
+
+- name: "Configure vagrant-consul-01"
+  # gather_facts: true
+  hosts: vagrant-consul-01
+  become: yes
+  tasks:
+    - name: "Create a systemd service file /etc/systemd/system/consul.service"
+      template:
+       src: config/01_consul.service.j2
+       dest: /etc/systemd/system/consul.service
+       owner: root
+       group: root
+       mode: 0644
+    - name: "Generate Consul secret"
+      shell: /usr/local/bin/consul keygen
+    - name: "Create a json configuration file  /etc/consul.d/config.json"
+      template:
+       src: config/01_config.json.j2
+       dest: /etc/consul.d/config.json
+       owner: root
+       group: root
+       mode: 0644
+
+
+- name: "Configure vagrant-consul-02"
+  # gather_facts: true
+  hosts: vagrant-consul-02
+  become: yes
+  # become_user: vagrant
+  tasks:
+    - name: "Create a systemd service file /etc/systemd/system/consul.service"
+      template:
+       src: config/02_consul.service.j2
+       dest: /etc/systemd/system/consul.service
+       owner: root
+       group: root
+       mode: 0644
+    - name: "Generate Consul secret"
+      shell: /usr/local/bin/consul keygen
+    - name: "Create a json configuration file  /etc/consul.d/config.json"
+      template:
+       src: config/02_config.json.j2
+       dest: /etc/consul.d/config.json
+       owner: root
+       group: root
+       mode: 0644
+
+- name: "Configure vagrant-consul-03"
+  # gather_facts: true
+  hosts: vagrant-consul-03
+  become: yes
+  # become_user: vagrant
+  tasks:
+    - name: "Create a systemd service file /etc/systemd/system/consul.service"
+      template:
+       src: config/03_consul.service.j2
+       dest: /etc/systemd/system/consul.service
+       owner: root
+       group: root
+       mode: 0644
+    - name: "Generate Consul secret"
+      shell: /usr/local/bin/consul keygen
+    - name: "Create a json configuration file  /etc/consul.d/config.json"
+      template:
+       src: config/03_config.json.j2
+       dest: /etc/consul.d/config.json
+       owner: root
+       group: root
+       mode: 0644
+
+- name: "Boot consul cluster"
+  # gather_facts: true
+  hosts: consulcluster
+  become: yes
+  tasks:
+    - name: "start consul service on all nodes"
+      systemd: name=consul daemon_reload=yes state=restarted enabled=yes
+    # - name: "Check cluster members"
+    #   systemd: consul members
+    - name: "Check cluster members"
+      shell: /usr/local/bin/consul members
+      register: consul_members_result
+    - name: "Consul members stdout"
+      debug: msg="{{ consul_members_result.stdout }}"

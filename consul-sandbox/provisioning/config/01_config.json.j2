@@ -1,0 +1,31 @@
+{
+    "advertise_addr": "192.168.18.9",
+    "bind_addr": "192.168.18.9",
+    "bootstrap_expect": 3,
+    "client_addr": "0.0.0.0",
+    "datacenter": "TOKYO-DC",
+    "data_dir": "/var/lib/consul",
+    "domain": "consul",
+    "enable_script_checks": true,
+    "dns_config": {
+        "enable_truncate": true,
+        "only_passing": true
+    },
+    "enable_syslog": true,
+    "encrypt": "bnRHLmJ6TeLomirgEOWP2g==",
+    "leave_on_terminate": true,
+    "log_level": "INFO",
+    "rejoin_after_leave": true,
+    "retry_join": [
+    "vagrant-consul-01",
+    "vagrant-consul-02",
+    "vagrant-consul-03"
+    ],
+    "server": true,
+    "start_join": [
+    "vagrant-consul-01",
+    "vagrant-consul-02",
+    "vagrant-consul-03"
+    ],
+    "ui": true
+}

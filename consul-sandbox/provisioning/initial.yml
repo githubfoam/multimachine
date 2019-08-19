@@ -1,0 +1,54 @@
+- hosts: localhost
+  become: yes
+  vars:
+    remote_user: "vagrant"
+    users_list:
+    - vagrant
+    sshd_permitroot_login:
+    server_list: # remote hosts
+    # - vagrant-k8s-master02
+    # - vagrant-worker03
+    - vagrant-lb01
+  tasks:
+    # locally create user with keys
+    - name: "Ensure group sudo exists"
+      group:
+        name: sudo
+        state: present
+    # upload ssh key
+    - name: "upload ssh key"
+      authorized_key:
+       user: "{{ remote_user }}"
+       state: present
+       manage_dir: yes
+       key: "{{ lookup('file', '/home/{{ remote_user }}/.ssh/id_rsa.pub') }}"
+    # configure ssh server
+    - name: "configure ssh server"
+      template:
+       src: ssh-setup.j2
+       dest: /etc/ssh/sshd_config
+       owner: root
+       mode: '0600'
+       validate: /usr/sbin/sshd -t -f %s
+       backup: yes
+    # restart sshd
+    - name: "restart sshd"
+      service:
+        name: sshd
+        state: restarted
+    # - name: "Create user accounts and add users to groups"
+    #   user:
+    #     name: "{{ item }}"
+    #     groups: "sudo"
+    #     generate_ssh_key: yes
+    #     ssh_key_type: rsa
+    #     # echo "devops1badpassword" | mkpasswd --stdin --method=sha-512 --salt="devops1mybadsalt"
+    #     password: $6$devops1mybadsalt$vPETGtncCxJNPWRbDQ.wf539Ek.5t.GM.VAFtBME6cNEVHkLvxLnfNSuQt8.QZH.gP60Ic7ZAfZNePzOeTkET1
+    #   with_items: "{{ users_list }}"
+
+    # - name: Copy keys
+    #   command: ssh-copy-id -i ~"{{ remote_user }}"/.ssh/id_rsa.pub "{{ remote_user }}"@"{{ item }}"
+    #   with_items: "{{ server_list }}"
+      # with_items:
+      #   - "{{ groups['masters'] }}"
+      #   - "{{ groups['workers'] }}"

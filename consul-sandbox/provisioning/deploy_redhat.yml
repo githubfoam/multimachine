@@ -1,0 +1,35 @@
+---
+- name: "Download and extract consul"
+  unarchive:
+    src: https://releases.hashicorp.com/consul/{{VER}}/consul_{{VER}}_linux_amd64.zip
+    dest: /usr/local/bin/
+    remote_src: yes
+  # - name: "Consul version"
+  #   command: consul version
+  #   register: consul_version_result
+  # - name: "Consul version stdout"
+  #   debug: msg="{{ consul_version_result.stdout }}"
+- name: "Create consul group"
+  group:
+   name: consul
+   state: present
+- name: "Create user accounts and add users to groups"
+  user:
+   name: consul
+   shell: /sbin/nologin
+   groups: consul
+   append: yes
+- name: "Create consul data directory and set ownership to consul user"
+  file:
+   path: /var/lib/consul
+   state: directory
+   owner: consul
+   group: consul
+   mode: 0775
+- name: "Create consul configurations directory"
+  file:
+   path: /etc/consul.d
+   state: directory
+   owner: consul
+   group: consul
+   mode: 0775

@@ -1,0 +1,15 @@
+---
+
+- name: Add mappings to /etc/hosts
+  blockinfile:
+    path: /etc/hosts
+    block: |
+      {{ item.ip }} {{ item.namelong }} {{ item.nameshort }}
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item.nameshort }}"
+  with_items:
+    # - { ip: "{{ ansible_eth1.ipv4.address }}", namelong: "{{ ansible_fqdn }}.local", nameshort:  "{{ ansible_nodename }}" }
+    - { ip: 192.168.18.12 , namelong: vagrant-remotecontrol01.local, nameshort: vagrant-remotecontrol01 }
+    - { ip: 192.168.18.9, namelong: vagrant-consul-01.local, nameshort: vagrant-consul-01 }
+    - { ip: 192.168.18.10, namelong: vagrant-consul-02.local, nameshort: vagrant-consul-02 }
+    - { ip: 192.168.18.11, namelong: vagrant-consul-03.local, nameshort: vagrant-consul-03 }
+  when: add_host_entries
