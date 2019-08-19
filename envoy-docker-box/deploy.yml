@@ -1,0 +1,4 @@
+---
+- hosts: control02
+  roles:
+    - common
