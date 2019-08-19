@@ -1,0 +1,6 @@
+# docker deployment
+
+~~~~
+-vagrant up  
+
+~~~~
