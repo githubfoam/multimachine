@@ -1,5 +1,0 @@
-# https://www.oreilly.com/ideas/6-creative-ways-to-solve-problems-with-linux-containers-and-docker
-# https://github.com/EarthWalkSoftware/docker-alpine-htop
-FROM alpine:latest
-RUN apk add --update htop && rm -rf /var/cache/apk/*
-CMD ["htop"]
