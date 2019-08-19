@@ -6,7 +6,7 @@ Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox" do |vb|
     vb.gui = false
     vb.memory = "512"
-    vb.cpus = 1
+    vb.cpus = 2
   end
 
   config.vm.define "control-machine1" do |webtier|
@@ -20,7 +20,7 @@ Vagrant.configure("2") do |config|
     ansible.playbook = "deploy.yml"
     ansible.become = true
     ansible.compatibility_mode = "2.0"
-    ansible.version = "2.8.1"
+    ansible.version = "2.8.2"
     end
     webtier.vm.provision "shell", inline: <<-SHELL
           wget https://research.cs.wisc.edu/htcondor/yum/RPM-GPG-KEY-HTCondor
@@ -30,7 +30,6 @@ Vagrant.configure("2") do |config|
           sudo systemctl start condor
           sudo systemctl enable condor
           sudo systemctl status condor
-          echo "control-machine1 up && running"
     SHELL
   end
 end
