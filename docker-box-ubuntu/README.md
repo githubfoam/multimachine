@@ -1,5 +1,5 @@
-# docker deployment on ubuntu
+# docker deployment
 
-
--vagrant up  
--vagrant ssh  
+~~~~
+vagrant up
+~~~~

@@ -1,4 +1,4 @@
 ---
-- hosts: control01
+- hosts: control02
   roles:
     - common
