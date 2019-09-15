@@ -9,7 +9,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "control02" do |webtier|
-      webtier.vm.box = "bento/ubuntu-19.04"
+      webtier.vm.box = "bento/ubuntu-16.04"
       webtier.vm.hostname = "control02"
       webtier.vm.network "private_network", ip: "192.168.45.41"
       webtier.vm.provider "virtualbox" do |vb|
@@ -22,9 +22,15 @@ Vagrant.configure("2") do |config|
         ansible.version = "2.8.4"
       end
       webtier.vm.provision "shell", inline: <<-SHELL
+            # Get Docker Engine - Community for Ubuntu
+            # https://docs.docker.com/install/linux/docker-ce/ubuntu/
+            sudo apt-get remove docker docker-engine docker.io containerd runc
             sudo apt-get update
-            sudo apt-get remove docker docker-engine docker.io
-            sudo apt-get install apt-transport-https ca-certificates curl software-properties-common -y
+            sudo apt-get install \
+            apt-transport-https \
+            ca-certificates \
+            curl \
+            software-properties-common -y
             curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
             sudo apt-key fingerprint 0EBFCD88
             sudo add-apt-repository \
@@ -32,8 +38,17 @@ Vagrant.configure("2") do |config|
             $(lsb_release -cs) \
             stable"
             sudo apt-get update
-            sudo apt-get install docker-ce -y
+            sudo apt-get install docker-ce docker-ce-cli containerd.io -y
             sudo docker --version
+            # Manage Docker as a non-root user
+            # https://docs.docker.com/install/linux/linux-postinstall/
+            sudo groupadd docker && sudo usermod -aG docker vagrant # add user to the docker group
+            sudo systemctl enable docker
+            # Install Docker Compose
+            # https://docs.docker.com/compose/install/
+            # sudo curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            # sudo chmod +x /usr/local/bin/docker-compose
+            # sudo docker-compose --version
             hostnamectl status
       SHELL
     end
