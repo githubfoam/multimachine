@@ -1,27 +1,39 @@
 ---
 - hosts: cluster
+  # gather_facts: yes
   vars:
-    remote_user: "devops1"
+    remote_user: "devops3"
+    sshd_use_pam: "no"
+    sshd_password_authentication: "no"
+    sshd_challenge_response_authentication: "no"
+    sshd_permitroot_login: "no"
   tasks:
-          - user:
-                  name: "{{ remote_user }}"
-                  comment: "{{ remote_user }}"
-                  shell: /bin/bash
-                  groups: sudo
-                  append: yes
-                  generate_ssh_key: yes
-                  # echo "devops1badpassword" | mkpasswd --stdin --method=sha-512 --salt="devops1mybadsalt"
-                  password: $6$devops1mybadsalt$vPETGtncCxJNPWRbDQ.wf539Ek.5t.GM.VAFtBME6cNEVHkLvxLnfNSuQt8.QZH.gP60Ic7ZAfZNePzOeTkET1
-                  # ssh_key_type: ed25519
-                  ssh_key_type: rsa
+          # - name: "Ensure remote group sudo exists"
+          #   group:
+          #     name: sudo
+          #     state: present
+          # - name: "Create remote user locally"
+          #   user:
+          #         name: "{{ remote_user }}"
+          #         comment: "{{ remote_user }}"
+          #         shell: /bin/bash
+          #         groups: sudo
+          #         append: yes
+          #         generate_ssh_key: yes
+          #         # echo "devops1badpassword" | mkpasswd --stdin --method=sha-512 --salt="devops1mybadsalt"
+          #         password: $6$devops1mybadsalt$vPETGtncCxJNPWRbDQ.wf539Ek.5t.GM.VAFtBME6cNEVHkLvxLnfNSuQt8.QZH.gP60Ic7ZAfZNePzOeTkET1
+          #         # ssh_key_type: ed25519
+          #         ssh_key_type: rsa
           # upload ssh key
-          - authorized_key:
+          - name: "Upload ssh key"
+            authorized_key:
                   user: "{{ remote_user }}"
                   state: present
                   manage_dir: yes
                   key: "{{ lookup('file', '/home/{{ remote_user }}/.ssh/id_rsa.pub') }}"
           # configure ssh server
-          - template:
+          - name: "Configure remote ssh server"
+            template:
                   src: ssh-setup.j2
                   dest: /etc/ssh/sshd_config
                   owner: root
@@ -32,3 +44,26 @@
           - service:
                   name: sshd
                   state: restarted
+# - hosts: apache
+- hosts: clients
+  become: yes
+  gather_facts: yes
+  vars:
+    remote_user: "devops3"
+  tasks:
+          - name: "Ensure remote group sudo exists locally"
+            group:
+              name: sudo
+              state: present
+          - name: "Create remote user locally"
+            user:
+                  name: "{{ remote_user }}"
+                  comment: "{{ remote_user }}"
+                  shell: /bin/bash
+                  groups: sudo
+                  append: yes
+                  generate_ssh_key: yes
+                  # echo "devops1badpassword" | mkpasswd --stdin --method=sha-512 --salt="devops1mybadsalt"
+                  password: $6$devops1mybadsalt$vPETGtncCxJNPWRbDQ.wf539Ek.5t.GM.VAFtBME6cNEVHkLvxLnfNSuQt8.QZH.gP60Ic7ZAfZNePzOeTkET1
+                  # ssh_key_type: ed25519
+                  ssh_key_type: rsa
