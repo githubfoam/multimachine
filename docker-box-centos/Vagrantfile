@@ -1,6 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-$etcd1_script = <<SCRIPT
+$docker_script = <<SCRIPT
 # Get Docker Engine - Community for CentOS
 # https://docs.docker.com/install/linux/docker-ce/centos/
 sudo yum remove docker \
@@ -47,7 +47,7 @@ Vagrant.configure("2") do |config|
         ansible.compatibility_mode = "2.0"
         ansible.version = "2.8.4"
       end
-      webtier.vm.provision "shell", inline: $etcd1_script, privileged: false
+      webtier.vm.provision "shell", inline: $docker_script, privileged: false
       webtier.vm.provision "shell", inline: <<-SHELL
           hostnamectl status
       SHELL
