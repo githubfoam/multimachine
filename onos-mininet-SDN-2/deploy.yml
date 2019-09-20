@@ -1,4 +1,0 @@
----
-- hosts: onos01
-  roles:
-    - common
