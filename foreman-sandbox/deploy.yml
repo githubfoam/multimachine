@@ -1,5 +1,0 @@
----
-- hosts: foremansrv01
-  become: yes
-  roles:
-    - common
