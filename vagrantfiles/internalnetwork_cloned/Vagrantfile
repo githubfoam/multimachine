@@ -1,0 +1,32 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+$script = <<SCRIPT
+hostnamectl status
+SCRIPT
+
+vm_memory = 512
+vm_cpus = 1
+vm_num = 3
+Vagrant.configure("2") do |config|
+
+    (1..vm_num).each do |n|
+    lan_ip = "192.168.50.#{n+10}"
+    config.vm.define "vg-srv-#{n}" do |pentestlab1|
+      pentestlab1.vm.box = "bento/centos-7.6"
+      pentestlab1.vm.provision "shell", inline: $script, privileged: false
+      pentestlab1.vm.provision :shell, :inline => "ip addr | grep \"inet\" | awk '{print $2}'"
+      pentestlab1.vm.network "private_network", ip: lan_ip, virtualbox__intnet: "intnetwork1"
+      pentestlab1.vm.provider :virtualbox do |vb|
+          vb.memory = vm_memory
+          vb.cpus = vm_cpus
+          vb.gui = false
+          # Linked clones is a feature that enables new VMs to be created based on an initial existing disk image,
+          # without the need to duplicate everything.
+          vb.linked_clone = true
+          vb.name = "vbox-srv-#{n}"
+      end
+    end
+    end
+
+end

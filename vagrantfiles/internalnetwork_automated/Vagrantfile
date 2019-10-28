@@ -1,0 +1,30 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+$script = <<SCRIPT
+hostnamectl status
+SCRIPT
+
+vm_memory = 512
+vm_cpus = 1
+vm_num = 2
+Vagrant.configure("2") do |config|
+
+   config.vm.box = "bento/centos-7.6"
+   config.vm.provision "shell", inline: $script, privileged: false
+
+    (1..vm_num).each do |n|
+    lan_ip = "192.168.50.#{n+10}"
+    config.vm.define "srv-#{n}" do |pentestlab1|
+      pentestlab1.vm.provision :shell, :inline => "ip addr | grep \"inet\" | awk '{print $2}'"
+      pentestlab1.vm.network "private_network", ip: lan_ip, virtualbox__intnet: "intnetwork1"
+      pentestlab1.vm.provider :virtualbox do |vb|
+          vb.memory = vm_memory
+          vb.cpus = vm_cpus
+          vb.gui = false
+          vb.name = "vbox-srv#{n}"
+      end
+    end
+    end
+
+end

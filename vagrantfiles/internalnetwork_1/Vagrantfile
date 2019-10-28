@@ -1,0 +1,43 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+$script = <<SCRIPT
+hostnamectl status
+SCRIPT
+
+vm_memory = 512
+vm_cpus = 1
+
+Vagrant.configure("2") do |config|
+    
+    # config.vm.box = "bento/centos-7.6"
+    # config.vm.provision "shell", inline: $script, privileged: false
+
+    config.vm.define "vg-srv1" do |pentestlab1|
+    pentestlab1.vm.box = "bento/centos-7.6"
+    pentestlab1.vm.provision "shell", inline: $script, privileged: false
+    pentestlab1.vm.provision :shell, :inline => "ip addr | grep \"inet\" | awk '{print $2}'"
+    pentestlab1.vm.provision "shell", inline: $script, privileged: false
+    pentestlab1.vm.network "private_network", ip: "192.168.50.11", virtualbox__intnet: "intnetwork1"
+    pentestlab1.vm.provider :virtualbox do |vb|
+      vb.memory = vm_memory
+      vb.cpus = vm_cpus
+      vb.gui = false
+      vb.name = "vbox-srv1"
+    end
+    end
+    config.vm.define "vg-srv2" do |pentestlab1|
+     pentestlab1.vm.box = "bento/ubuntu-19.04"
+     pentestlab1.vm.provision "shell", inline: $script, privileged: false
+     pentestlab1.vm.provision :shell, :inline => "ip addr | grep \"inet\" | awk '{print $2}'"
+     pentestlab1.vm.provision "shell", inline: $script, privileged: false
+     pentestlab1.vm.network "private_network", ip: "192.168.50.12", virtualbox__intnet: "intnetwork1"
+     pentestlab1.vm.provider :virtualbox do |vb|
+       vb.memory = vm_memory
+       vb.cpus = vm_cpus
+       vb.gui = false
+       vb.name = "vbox-srv2"
+     end
+    end
+
+end
